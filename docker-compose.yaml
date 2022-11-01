@@ -6,6 +6,9 @@ services:
     container_name: processor
     restart: always
     environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=metrics
       - POSTGRES_HOST=metrics
       - POSTGRES_PORT=5432
       - POSTGRES_DB=metrics
@@ -13,6 +16,7 @@ services:
       - POSTGRES_PASSWORD=no_password
     depends_on:
       - metrics-db
+      - broker
 
   metics-db:
     image: postgres:14-alpine
@@ -27,6 +31,18 @@ services:
     volumes:
       - pgdata-14-metrics:/var/lib/postgresql/data
 
+  broker:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: always
+    ports:
+      - "127.0.0.1:1883:1883"
+      - "127.0.0.1:9001:9001"
+    volumes:
+     - mosquitto.conf:/mosquitto/config/mosquitto.conf
+
 volumes:
   pgdata-14-metrics:
+    driver: local
+  mosquitto.conf:
     driver: local
