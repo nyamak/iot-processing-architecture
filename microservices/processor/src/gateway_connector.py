@@ -2,7 +2,6 @@ import json
 
 import paho.mqtt.client as mqtt
 
-
 PAYLOAD_SCHEMA = {
     "unit_id": {"type": int, "is_required": True},
     "created_at": {"type": str, "is_required": True},

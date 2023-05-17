@@ -1,8 +1,8 @@
 import unittest
-from requests.exceptions import Timeout
-from unittest.mock import patch, ANY
+from unittest.mock import ANY, patch
 
-from notifier_connector import send, build_notification_payload, Warnings, Thresholds
+from notifier_connector import Thresholds, Warnings, build_notification_payload, send
+from requests.exceptions import Timeout
 
 
 class NotifierConnectorTest(unittest.TestCase):

@@ -1,4 +1,5 @@
 import os
+
 import requests
 
 NOTIFIER_HOST = os.environ.get("NOTIFIER_HOST")
