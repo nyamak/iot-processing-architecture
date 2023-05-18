@@ -18,32 +18,11 @@ class Thresholds:
     DEFECTIVE = os.environ.get("DEFECTIVE_LIMIT", 0.05)  # %
 
 
-NOTIFICATION_PAYLOAD_SCHEMA = {
-    "type": str,
-    "machine_id": int,
-    "current_value": int | float,
-    "target_value": int | float,
-}
-
-
 def send(notification_payload):
-    if not _is_payload_valid(notification_payload):
-        return False
-
-    requests.post(f"{NOTIFIER_HOST}:{NOTIFIER_PORT}/", json=notification_payload)
-    return True
-
-
-def _is_payload_valid(notification_payload):
-    if not isinstance(notification_payload, list):
-        return False
-    for subpayload in notification_payload:
-        for field, field_type in NOTIFICATION_PAYLOAD_SCHEMA.items():
-            if field not in subpayload:
-                return False
-            if not isinstance(subpayload[field], field_type):
-                return False
-    return True
+    response = requests.post(
+        f"{NOTIFIER_HOST}:{NOTIFIER_PORT}/notifications", json=notification_payload
+    )
+    return response.status_code == 200
 
 
 def build_notification_payload(machine_id, stats):

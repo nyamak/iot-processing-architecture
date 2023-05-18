@@ -1,0 +1,23 @@
+import os
+
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+
+def send_to_sendgrid(notification_payload):
+    message = Mail(
+        from_email=os.environ.get("SENDGRID_FROM_EMAIL"),
+        to_emails=os.environ.get("SENDGRID_TO_EMAIL"),
+        subject=f"{notification['type']} - Machine ID: {notification['machine_id']}",
+        html_content="<strong>and easy to do anywhere, even with Python</strong>",
+    )
+    try:
+        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+        return True
+    except Exception as e:
+        print(e.message)
+        return False
