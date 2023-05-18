@@ -7,9 +7,9 @@ NOTIFIER_PORT = os.environ.get("NOTIFIER_PORT")
 
 
 class Warnings:
-    PRESSURE = "pressure_warning"
-    TEMPERATURE = "temperature_warning"
-    DEFECTIVE = "defective_warning"
+    PRESSURE = "pressure"
+    TEMPERATURE = "temperature"
+    DEFECTIVE = "defective"
 
 
 class Thresholds:
@@ -25,39 +25,35 @@ def send(notification_payload):
     return response.status_code == 200
 
 
-def build_notification_payload(machine_id, stats):
-    notification_payload = []
+def build_notification_payload(machine_id, averages):
+    notification_payload = {"machine_id": machine_id, "warnings": []}
 
-    if stats["pressure_average"] > Thresholds.PRESSURE:
-        notification_payload.append(
+    if averages["pressure"] > Thresholds.PRESSURE:
+        notification_payload["warnings"].append(
             _build_single_notification_payload(
                 Warnings.PRESSURE,
-                machine_id,
-                stats.get("pressure_average"),
+                averages.get("pressure"),
             )
         )
-    if stats["temperature_average"] > Thresholds.TEMPERATURE:
-        notification_payload.append(
+    if averages["temperature"] > Thresholds.TEMPERATURE:
+        notification_payload["warnings"].append(
             _build_single_notification_payload(
                 Warnings.TEMPERATURE,
-                machine_id,
-                stats.get("temperature_average"),
+                averages.get("temperature"),
             )
         )
-    if stats["defective_average"] > Thresholds.DEFECTIVE:
-        notification_payload.append(
+    if averages["defective"] > Thresholds.DEFECTIVE:
+        notification_payload["warnings"].append(
             _build_single_notification_payload(
                 Warnings.DEFECTIVE,
-                machine_id,
-                stats.get("defective_average"),
+                averages.get("defective"),
             )
         )
     return notification_payload
 
 
-def _build_single_notification_payload(notification_type, machine_id, current_value):
+def _build_single_notification_payload(notification_type, current_value):
     payload = {
-        "machine_id": machine_id,
         "current_value": current_value,
         "type": notification_type,
     }

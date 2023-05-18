@@ -17,16 +17,16 @@ def process(payload_dict):
     database_connector.save_measurement_to_db(**payload_dict)
 
     # Get stats for machine_id
-    stats = get_stats_for_machine(**payload_dict)
+    averages = get_averages_for_machine(**payload_dict)
 
     # Check for notifications
     notification_payload = notifier_connector.build_notification_payload(
-        payload_dict, stats
+        payload_dict, averages
     )
     notifier_connector.send(notification_payload)
 
 
-def get_stats_for_machine(machine_id, timestamp):
+def get_averages_for_machine(machine_id, timestamp):
     (
         temperature_avg,
         pressure_avg,
@@ -34,9 +34,9 @@ def get_stats_for_machine(machine_id, timestamp):
     defective_avg = database_connector.get_defective_average(machine_id, timestamp)
 
     return {
-        "temperature_average": temperature_avg,
-        "pressure_average": pressure_avg,
-        "defective_average": defective_avg,
+        "temperature": temperature_avg,
+        "pressure": pressure_avg,
+        "defective": defective_avg,
     }
 
 
