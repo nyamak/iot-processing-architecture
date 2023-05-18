@@ -1,12 +1,13 @@
+import os
+
 import sendgrid_client
 from flask_api import FlaskAPI, request, status
 
 app = FlaskAPI(__name__)
 
 
-NOTIFICATION_PAYLOAD_SCHEMA = {
+WARNINGS_PAYLOAD_SCHEMA = {
     "type": str,
-    "machine_id": int,
     "current_value": int | float,
     "target_value": int | float,
 }
@@ -26,12 +27,21 @@ def send_notifications():
 
 
 def _is_notification_payload_valid(notification_payload):
-    if not isinstance(notification_payload, list):
+    if not isinstance(notification_payload, dict):
         return False
-    for subpayload in notification_payload:
-        for field, field_type in NOTIFICATION_PAYLOAD_SCHEMA.items():
-            if field not in subpayload:
+    if not isinstance(notification_payload.get("machine_id"), int):
+        return False
+    if not isinstance(notification_payload.get("warnings"), list):
+        return False
+    for warnings in notification_payload["warnings"]:
+        for field, field_type in WARNINGS_PAYLOAD_SCHEMA.items():
+            if field not in warnings:
                 return False
-            if not isinstance(subpayload[field], field_type):
+            if not isinstance(warnings[field], field_type):
                 return False
     return True
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=True, host="0.0.0.0", port=port)
