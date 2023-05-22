@@ -16,6 +16,7 @@ class NotifierConnectorTest(unittest.TestCase):
                     "type": Warnings.PRESSURE,
                     "current_value": 1.3,
                     "target_value": 1.2,
+                    "unit": "atm",
                 }
             ],
         }
@@ -34,6 +35,7 @@ class NotifierConnectorTest(unittest.TestCase):
                     "type": Warnings.TEMPERATURE,
                     "current_value": 100,
                     "target_value": 90,
+                    "unit": "°C",
                 }
             ],
         }
@@ -59,6 +61,7 @@ class NotifierConnectorTest(unittest.TestCase):
                 "type": Warnings.TEMPERATURE,
                 "current_value": averages.get("temperature"),
                 "target_value": Thresholds.TEMPERATURE,
+                "unit": "°C",
             },
             res.get("warnings"),
         )
@@ -67,6 +70,7 @@ class NotifierConnectorTest(unittest.TestCase):
                 "type": Warnings.DEFECTIVE,
                 "current_value": averages.get("defective"),
                 "target_value": Thresholds.DEFECTIVE,
+                "unit": "%",
             },
             res.get("warnings"),
         )

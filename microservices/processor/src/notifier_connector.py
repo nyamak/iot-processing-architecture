@@ -60,8 +60,11 @@ def _build_single_notification_payload(notification_type, current_value):
     match notification_type:
         case Warnings.PRESSURE:
             payload["target_value"] = Thresholds.PRESSURE
+            payload["unit"] = "atm"
         case Warnings.TEMPERATURE:
             payload["target_value"] = Thresholds.TEMPERATURE
+            payload["unit"] = "°C"
         case Warnings.DEFECTIVE:
             payload["target_value"] = Thresholds.DEFECTIVE
+            payload["unit"] = "%"
     return payload
