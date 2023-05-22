@@ -49,7 +49,7 @@ class NotifierConnectorTest(unittest.TestCase):
         averages = {
             "temperature": 100,
             "pressure": 1,
-            "defective": 0.10,
+            "defective": 10.0,
         }
         machine_id = 123
 

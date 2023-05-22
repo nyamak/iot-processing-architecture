@@ -15,7 +15,7 @@ class Warnings:
 class Thresholds:
     PRESSURE = os.environ.get("PRESSURE_LIMIT", 1.2)  # atm
     TEMPERATURE = os.environ.get("TEMPERATURE_LIMIT", 75)  # celsius
-    DEFECTIVE = os.environ.get("DEFECTIVE_LIMIT", 0.05)  # %
+    DEFECTIVE = os.environ.get("DEFECTIVE_LIMIT", 5.0)  # %
 
 
 def send(notification_payload):

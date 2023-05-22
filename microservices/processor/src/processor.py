@@ -36,7 +36,7 @@ def get_averages_for_machine(machine_id, timestamp):
     return {
         "temperature": temperature_avg,
         "pressure": pressure_avg,
-        "defective": defective_avg,
+        "defective": defective_avg * 100.0,  # multiplying by 100 for pctage
     }
 
 
