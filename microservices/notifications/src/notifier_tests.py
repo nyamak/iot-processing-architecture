@@ -12,11 +12,13 @@ class NotifierTest(unittest.TestCase):
     ):
         payload = {
             "machine_id": None,
+            "created_at": "2022-05-18T11:40:22.519222",
             "warnings": [
                 {
                     "type": "pressure",
                     "current_value": 1,
                     "target_value": 0.9,
+                    "unit": "atm",
                 }
             ],
         }
@@ -33,16 +35,19 @@ class NotifierTest(unittest.TestCase):
     ):
         payload = {
             "machine_id": 123,
+            "created_at": "2022-05-18T11:40:22.519222",
             "warnings": [
                 {
                     "type": "pressure",
                     "current_value": 1,
                     "target_value": 0.9,
+                    "unit": "atm",
                 },
                 {
                     "type": "temperature",
                     "current_value": None,
                     "target_value": 0.9,
+                    "unit": "°C",
                 },
             ],
         }
@@ -58,11 +63,13 @@ class NotifierTest(unittest.TestCase):
         mock_sendgrid_client.send_to_sendgrid.return_value = True
         payload = {
             "machine_id": 123,
+            "created_at": "2022-05-18T11:40:22.519222",
             "warnings": [
                 {
                     "type": "pressure",
                     "current_value": 1,
                     "target_value": 0.9,
+                    "unit": "atm",
                 }
             ],
         }

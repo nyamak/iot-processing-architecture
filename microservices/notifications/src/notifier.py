@@ -6,10 +6,17 @@ from flask_api import FlaskAPI, request, status
 app = FlaskAPI(__name__)
 
 
+NOTIFICATIONS_PAYLOAD_SCHEMA = {
+    "machine_id": int,
+    "created_at": str,
+    "warnings": list,
+}
+
 WARNINGS_PAYLOAD_SCHEMA = {
     "type": str,
     "current_value": int | float,
     "target_value": int | float,
+    "unit": str,
 }
 
 
@@ -29,16 +36,18 @@ def send_notifications():
 def _is_notification_payload_valid(notification_payload):
     if not isinstance(notification_payload, dict):
         return False
-    if not isinstance(notification_payload.get("machine_id"), int):
-        return False
-    if not isinstance(notification_payload.get("warnings"), list):
+    if not _is_according_to_schema(notification_payload, NOTIFICATIONS_PAYLOAD_SCHEMA):
         return False
     for warnings in notification_payload["warnings"]:
-        for field, field_type in WARNINGS_PAYLOAD_SCHEMA.items():
-            if field not in warnings:
-                return False
-            if not isinstance(warnings[field], field_type):
-                return False
+        if not _is_according_to_schema(warnings, WARNINGS_PAYLOAD_SCHEMA):
+            return False
+    return True
+
+
+def _is_according_to_schema(payload, schema):
+    for field, field_type in schema.items():
+        if not isinstance(payload.get(field), field_type):
+            return False
     return True
 
 
