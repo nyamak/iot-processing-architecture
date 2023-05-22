@@ -18,7 +18,7 @@ def _bytes_to_dict(payload_bytes):
     """
     try:
         decoded_payload = payload_bytes.decode("utf-8").replace("'", '"')
-        return json.dumps(decoded_payload)
+        return json.loads(decoded_payload)
     except Exception:
         return None
 
