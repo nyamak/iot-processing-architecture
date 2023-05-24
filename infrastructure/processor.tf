@@ -28,7 +28,7 @@ resource "kubernetes_deployment" "processor" {
       spec {
         termination_grace_period_seconds = 30
         container {
-          image             = local.processor_image_url
+          image             = var.processor_image_url
           name              = "processor"
           image_pull_policy = "Always"
 
@@ -106,13 +106,17 @@ resource "kubernetes_config_map" "processor" {
     name = "processor"
   }
   data = {
-    KAFKA_BROKER_URL     = "${data.terraform_remote_state.intermediary.outputs.kafka_host}:${data.terraform_remote_state.intermediary.outputs.kafka_port}"
-    POSTGRES_HOST        = data.terraform_remote_state.intermediary.outputs.processor_db_host
-    POSTGRES_PORT        = data.terraform_remote_state.intermediary.outputs.processor_db_port
-    POSTGRES_DB          = data.terraform_remote_state.intermediary.outputs.processor_db_name
-    JAEGER_SAMPLER_TYPE  = var.jaeger_sampler_type
-    JAEGER_SAMPLER_PARAM = var.jaeger_sampler_param
-    JAEGER_ENDPOINT      = local.jaeger_endpoint
+    MQTT_HOST         = var.mqtt_host
+    MQTT_PORT         = var.mqtt_port
+    MQTT_TOPIC        = var.mqtt_topic
+    DB_HOST           = var.metrics_db_host
+    DB_PORT           = var.metrics_db_port
+    DB_NAME           = var.metrics_db_name
+    PRESSURE_LIMIT    = var.pressure_limit
+    TEMPERATURE_LIMIT = var.temperature_limit
+    DEFECTIVE_LIMIT   = var.defective_limit
+    NOTIFIER_HOST     = var.notifier_service_host
+    NOTIFIER_PORT     = var.notifier_service_port
   }
 }
 
@@ -121,8 +125,8 @@ resource "kubernetes_secret" "processor" {
     name = "processor"
   }
   data = {
-    POSTGRES_USER     = data.terraform_remote_state.intermediary.outputs.processor_db_username
-    POSTGRES_PASSWORD = data.terraform_remote_state.intermediary.outputs.processor_db_password
+    DB_USER     = var.metrics_db_username
+    DB_PASSWORD = var.metrics_db_password
   }
 }
 
