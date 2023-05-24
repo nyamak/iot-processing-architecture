@@ -6,7 +6,7 @@ import notifier_connector
 from dotenv import load_dotenv
 
 MQTT_HOST = os.environ.get("MQTT_HOST", "test.mosquitto.org")
-MQTT_PORT = os.environ.get("MQTT_PORT", 1883)
+MQTT_PORT = int(os.environ.get("MQTT_PORT", 1883))
 MQTT_TOPIC = os.environ.get("MQTT_TOPIC", "$SYS/#")
 
 

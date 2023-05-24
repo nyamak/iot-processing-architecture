@@ -3,7 +3,7 @@ import os
 import requests
 
 NOTIFIER_HOST = os.environ.get("NOTIFIER_HOST")
-NOTIFIER_PORT = os.environ.get("NOTIFIER_PORT")
+NOTIFIER_PORT = int(os.environ.get("NOTIFIER_PORT"))
 
 
 class Warnings:
@@ -13,9 +13,9 @@ class Warnings:
 
 
 class Thresholds:
-    PRESSURE = os.environ.get("PRESSURE_LIMIT", 1.2)  # atm
-    TEMPERATURE = os.environ.get("TEMPERATURE_LIMIT", 75)  # celsius
-    DEFECTIVE = os.environ.get("DEFECTIVE_LIMIT", 5.0)  # %
+    PRESSURE = float(os.environ.get("PRESSURE_LIMIT", 1.2))  # atm
+    TEMPERATURE = float(os.environ.get("TEMPERATURE_LIMIT", 75.0))  # celsius
+    DEFECTIVE = float(os.environ.get("DEFECTIVE_LIMIT", 5.0))  # %
 
 
 def send(notification_payload):
