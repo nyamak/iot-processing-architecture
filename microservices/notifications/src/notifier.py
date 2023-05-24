@@ -20,6 +20,11 @@ WARNINGS_PAYLOAD_SCHEMA = {
 }
 
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return "OK", status.HTTP_200_OK
+
+
 @app.route("/notifications", methods=["POST"])
 def send_notifications():
     notification_payload = request.data
