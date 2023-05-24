@@ -88,6 +88,7 @@ resource "kubernetes_config_map" "notifier" {
   data = {
     SENGRID_FROM_EMAIL = var.sendgrid_from_email
     SENDGRID_TO_EMAIL  = var.sendgrid_to_email
+    PORT               = var.notifier_service_port
   }
 }
 
