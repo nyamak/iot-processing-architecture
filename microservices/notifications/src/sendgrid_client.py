@@ -14,7 +14,7 @@ def send_to_sendgrid(notification_payload):
         print(response.headers)
         return True
     except Exception as e:
-        print(e.message)
+        print(e.to_dict)
         return False
 
 

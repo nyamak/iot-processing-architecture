@@ -2,7 +2,8 @@ import os
 
 import sendgrid_client
 from dotenv import load_dotenv
-from flask_api import FlaskAPI, request, status
+from flask import request
+from flask_api import FlaskAPI, status
 
 app = FlaskAPI(__name__)
 
@@ -61,4 +62,4 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     if os.environ.get("ENV") == "DEV":
         load_dotenv()
-    app.run(debug=True, host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port)
