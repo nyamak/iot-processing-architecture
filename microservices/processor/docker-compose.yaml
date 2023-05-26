@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  processor:
+    build: .
+    container_name: processor
+    restart: always
+    environment:
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=payloads
+      - DB_HOST=metrics-db
+      - DB_PORT=5432
+      - DB_NAME=metrics
+      - DB_USER=postgres
+      - DB_PASSWORD=no_password
+      - ENV=DEV
+      - PRESSURE_LIMIT=1.2
+      - TEMPERATURE_LIMIT=75
+      - DEFECTIVE_LIMIT=5.0
+      - NOTIFIER_HOST=notifier
+      - NOTIFIER_PORT=5000
+    depends_on:
+      - metrics-db
+
+  metrics-db:
+    image: postgres:14-alpine
+    container_name: metrics
+    restart: always
+    environment:
+      - POSTGRES_DB=metrics
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=no_password
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata-14-metrics:/var/lib/postgresql/data
+
+volumes:
+  pgdata-14-metrics:
+    driver: local
