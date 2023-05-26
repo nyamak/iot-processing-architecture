@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS units(
     PRIMARY KEY(unit_id),
     CONSTRAINT fk_machine
         FOREIGN KEY(machine_id)
-            REFERENCES machines(machines_id)
+            REFERENCES machines(machine_id)
 );
 
 CREATE TABLE IF NOT EXISTS measurements(
@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS measurements(
     created_at  TIMESTAMP DEFAULT current_timestamp,
     CONSTRAINT fk_machine
         FOREIGN KEY(machine_id)
-            REFERENCES machines(machines_id)
+            REFERENCES machines(machine_id)
 );
