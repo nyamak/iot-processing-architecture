@@ -3,6 +3,9 @@ from unittest import mock
 
 from processor import get_averages_for_machine, process
 
+# Note: to run these tests, use docker-compose up metrics-db on microservices/processor
+# to spin up test DB and apply migrations manually on first time.
+
 
 class ProcessorTests(unittest.TestCase):
     @mock.patch("processor.get_averages_for_machine")
