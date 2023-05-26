@@ -12,13 +12,17 @@ def process(payload_dict):
     database_connector.save_measurement_to_db(**payload_dict)
 
     # Get stats for machine_id
-    averages = get_averages_for_machine(**payload_dict)
+    averages = get_averages_for_machine(
+        payload_dict["machine_id"], payload_dict["created_at"]
+    )
 
     # Check for notifications
     notification_payload = notifier_connector.build_notification_payload(
         payload_dict, averages
     )
-    notifier_connector.send(notification_payload)
+
+    if len(notification_payload.get("warnings", [])) > 0:
+        notifier_connector.send(notification_payload)
 
 
 def get_averages_for_machine(machine_id, timestamp):
