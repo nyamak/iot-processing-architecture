@@ -1,13 +1,7 @@
-import os
-
 import database_connector
 import gateway_connector
 import notifier_connector
-from dotenv import load_dotenv
-
-MQTT_HOST = os.environ.get("MQTT_HOST", "test.mosquitto.org")
-MQTT_PORT = int(os.environ.get("MQTT_PORT", 1883))
-MQTT_TOPIC = os.environ.get("MQTT_TOPIC", "$SYS/#")
+from config import config
 
 
 def process(payload_dict):
@@ -42,9 +36,7 @@ def get_averages_for_machine(machine_id, timestamp):
 
 
 if __name__ == "__main__":
-    if os.environ.get("ENV") == "DEV":
-        load_dotenv()
     connector = gateway_connector.MQTTConnector(
-        MQTT_HOST, MQTT_PORT, MQTT_TOPIC, process
+        config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_TOPIC"], process
     )
     connector.main()

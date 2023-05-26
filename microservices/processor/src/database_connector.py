@@ -2,22 +2,17 @@ import os
 from contextlib import contextmanager
 from datetime import datetime
 
+from config import config
 from psycopg2 import pool
-
-DB_HOST = os.environ.get("DB_HOST")
-DB_PORT = int(os.environ.get("DB_PORT"))
-DB_USER = os.environ.get("DB_USER")
-DB_PASSWORD = os.environ.get("DB_PASSWORD")
-DB_NAME = os.environ.get("DB_NAME")
 
 db_pool = pool.SimpleConnectionPool(
     1,
     5,
-    host=DB_HOST,
-    port=DB_PORT,
-    user=DB_USER,
-    password=DB_PASSWORD,
-    database=DB_NAME,
+    host=config["DB_HOST"],
+    port=config["DB_PORT"],
+    user=config["DB_USER"],
+    password=config["DB_PASSWORD"],
+    database=config["DB_NAME"],
 )
 
 

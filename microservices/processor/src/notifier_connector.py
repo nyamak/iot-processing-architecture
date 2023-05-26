@@ -1,9 +1,5 @@
-import os
-
 import requests
-
-NOTIFIER_HOST = os.environ.get("NOTIFIER_HOST")
-NOTIFIER_PORT = int(os.environ.get("NOTIFIER_PORT"))
+from config import config
 
 
 class Warnings:
@@ -13,14 +9,15 @@ class Warnings:
 
 
 class Thresholds:
-    PRESSURE = float(os.environ.get("PRESSURE_LIMIT", 1.2))  # atm
-    TEMPERATURE = float(os.environ.get("TEMPERATURE_LIMIT", 75.0))  # celsius
-    DEFECTIVE = float(os.environ.get("DEFECTIVE_LIMIT", 5.0))  # %
+    PRESSURE = config["PRESSURE_LIMIT"]  # atm
+    TEMPERATURE = config["TEMPERATURE_LIMIT"]  # celsius
+    DEFECTIVE = config["DEFECTIVE_LIMIT"]  # %
 
 
 def send(notification_payload):
     response = requests.post(
-        f"{NOTIFIER_HOST}:{NOTIFIER_PORT}/notifications", json=notification_payload
+        f"{config['NOTIFIER_HOST']}:{config['NOTIFIER_PORT']}/notifications",
+        json=notification_payload,
     )
     return response.status_code == 200
 
