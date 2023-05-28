@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS units(
     CONSTRAINT fk_machine
         FOREIGN KEY(machine_id)
             REFERENCES machines(machine_id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS measurements(
@@ -23,4 +24,5 @@ CREATE TABLE IF NOT EXISTS measurements(
     CONSTRAINT fk_machine
         FOREIGN KEY(machine_id)
             REFERENCES machines(machine_id)
+            ON DELETE CASCADE
 );
