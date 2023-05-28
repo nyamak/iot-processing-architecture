@@ -20,4 +20,5 @@ config = {
     "TEMPERATURE_LIMIT": float(os.environ.get("TEMPERATURE_LIMIT", 75.0)),
     "PRESSURE_LIMIT": float(os.environ.get("PRESSURE_LIMIT", 1.2)),
     "DEFECTIVE_LIMIT": float(os.environ.get("DEFECTIVE_LIMIT", 5.0)),
+    "NOTIFICATION_TIME_WINDOW": float(os.environ.get("NOTIFICATION_TIME_WINDOW", 60)),
 }
