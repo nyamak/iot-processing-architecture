@@ -26,14 +26,26 @@ def _get_connection():
         db_pool.putconn(conn)
 
 
-def save_unit_to_db(machine_id, unit_id, is_defective, created_at):
+def save_payload_to_db(
+    unit_id, created_at, is_defective, machine_id, machine_temperature, machine_pressure
+):
     """
-    Saves a new unit to the database.
+    Saves all data from a payload to the database.
     """
-    created_at = datetime.fromisoformat(created_at)
     with _get_connection() as conn:
         try:
             cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO machines(
+                    machine_id
+                )
+                VALUES
+                    (%s)
+                ON CONFLICT DO NOTHING;
+                """,
+                (machine_id,),
+            )
             cursor.execute(
                 """
                 INSERT INTO units(
@@ -44,20 +56,6 @@ def save_unit_to_db(machine_id, unit_id, is_defective, created_at):
                 """,
                 (machine_id, unit_id, is_defective, created_at),
             )
-            cursor.close()
-            conn.commit()
-        except:
-            conn.rollback()
-
-
-def save_measurement_to_db(machine_id, temperature, pressure, created_at):
-    """
-    Saves a new measurement to the database.
-    """
-    created_at = datetime.fromisoformat(created_at)
-    with _get_connection() as conn:
-        try:
-            cursor = conn.cursor()
             cursor.execute(
                 """
                 INSERT INTO measurements(
@@ -66,7 +64,7 @@ def save_measurement_to_db(machine_id, temperature, pressure, created_at):
                 VALUES
                     (%s, %s, %s, %s);
                 """,
-                (machine_id, temperature, pressure, created_at),
+                (machine_id, machine_temperature, machine_pressure, created_at),
             )
             cursor.close()
             conn.commit()

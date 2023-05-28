@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime
 from unittest import mock
 
 from processor import get_averages_for_machine, process
@@ -42,19 +43,31 @@ class ProcessorTests(unittest.TestCase):
             ],
         }
 
-        payload = {
+        payload_dict = {
             "unit_id": 123,
-            "created_at": "2022-05-18T11:40:22.519222",
+            "created_at": datetime.fromisoformat("2022-05-18T11:40:22.519222"),
             "is_defective": True,
             "machine_id": 123,
             "machine_temperature": 110.0,
             "machine_pressure": 1.2,
         }
 
-        process(payload)
+        process(payload_dict)
 
-        mock_database.save_measurement_to_db.assert_called_once_with(**payload)
-        mock_get_averages.assert_called_once_with(123, "2022-05-18T11:40:22.519222")
+        mock_database.save_payload_to_db.assert_called_once_with(**payload_dict)
+        mock_get_averages.assert_called_once_with(
+            123,
+            datetime.fromisoformat("2022-05-18T11:39:22.519222"),
+        )
+        mock_notifier.build_notification_payload.assert_called_once_with(
+            123,
+            datetime.fromisoformat("2022-05-18T11:40:22.519222"),
+            {
+                "temperature": 150.0,
+                "pressure": 1.5,
+                "defective": 20.0,
+            },
+        )
         mock_notifier.send.assert_called_once()
 
     @mock.patch("processor.get_averages_for_machine")
@@ -76,7 +89,7 @@ class ProcessorTests(unittest.TestCase):
 
         payload = {
             "unit_id": 123,
-            "created_at": "2022-05-18T11:40:22.519222",
+            "created_at": datetime.fromisoformat("2022-05-18T11:40:22.519222"),
             "is_defective": True,
             "machine_id": 123,
             "machine_temperature": 15.0,
@@ -85,8 +98,19 @@ class ProcessorTests(unittest.TestCase):
 
         process(payload)
 
-        mock_database.save_measurement_to_db.assert_called_once_with(**payload)
-        mock_get_averages.assert_called_once_with(123, "2022-05-18T11:40:22.519222")
+        mock_database.save_payload_to_db.assert_called_once_with(**payload)
+        mock_get_averages.assert_called_once_with(
+            123, datetime.fromisoformat("2022-05-18T11:39:22.519222")
+        )
+        mock_notifier.build_notification_payload.assert_called_once_with(
+            123,
+            datetime.fromisoformat("2022-05-18T11:40:22.519222"),
+            {
+                "temperature": 15.0,
+                "pressure": 1.0,
+                "defective": 2.0,
+            },
+        )
         mock_notifier.send.assert_not_called()
 
     @mock.patch("processor.database_connector")
@@ -97,7 +121,9 @@ class ProcessorTests(unittest.TestCase):
         )
         mock_database_connector.get_defective_average.return_value = 0.13
 
-        res = get_averages_for_machine(123, "2022-05-18T11:40:22.519222")
+        res = get_averages_for_machine(
+            123, datetime.fromisoformat("2022-05-18T11:40:12.519222")
+        )
 
         self.assertEqual(
             res,

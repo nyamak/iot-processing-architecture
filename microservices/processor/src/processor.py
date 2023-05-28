@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import database_connector
 import gateway_connector
 import notifier_connector
@@ -9,16 +11,20 @@ def process(payload_dict):
     Processes the payload in the dictionary format.
     """
     # Save on DB
-    database_connector.save_measurement_to_db(**payload_dict)
+    database_connector.save_payload_to_db(**payload_dict)
+
+    average_window_start = payload_dict["created_at"] - timedelta(
+        seconds=config["NOTIFICATION_TIME_WINDOW"]
+    )
 
     # Get stats for machine_id
     averages = get_averages_for_machine(
-        payload_dict["machine_id"], payload_dict["created_at"]
+        payload_dict["machine_id"], average_window_start
     )
 
     # Check for notifications
     notification_payload = notifier_connector.build_notification_payload(
-        payload_dict, averages
+        payload_dict["machine_id"], payload_dict["created_at"], averages
     )
 
     if len(notification_payload.get("warnings", [])) > 0:
