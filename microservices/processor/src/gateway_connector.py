@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import paho.mqtt.client as mqtt
 
@@ -35,7 +36,19 @@ def _is_valid(payload_dict):
             return False
         if not isinstance(payload_dict[field], attrs["type"]):
             return False
+
+    if not _is_datetime_isostring(payload_dict["created_at"]):
+        return False
+
     return True
+
+
+def _is_datetime_isostring(string):
+    try:
+        datetime.fromisoformat(string)
+        return True
+    except:
+        return False
 
 
 class MQTTConnector:
@@ -60,6 +73,7 @@ class MQTTConnector:
             print("Error:payload not valid.")
             return
 
+        dict_payload["created_at"] = datetime.fromisoformat(dict_payload["created_at"])
         self.process(dict_payload)
 
     def main(self):

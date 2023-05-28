@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime
 from types import SimpleNamespace
 from unittest import mock
 
@@ -37,7 +38,7 @@ class GatewayConnectorTests(unittest.TestCase):
         mock_process.assert_called_once_with(
             {
                 "unit_id": 123,
-                "created_at": "2022-05-18T11:40:22.519222",
+                "created_at": datetime.fromisoformat("2022-05-18T11:40:22.519222"),
                 "is_defective": True,
                 "machine_id": 123,
                 "machine_temperature": 110.0,
