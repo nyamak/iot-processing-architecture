@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime
 from unittest.mock import ANY, patch
 
 from notifier_connector import Thresholds, Warnings, build_notification_payload, send
@@ -11,6 +12,7 @@ class NotifierConnectorTest(unittest.TestCase):
         mock_requests.post.side_effect = Timeout
         payload = {
             "machine_id": 123,
+            "created_at": "2022-05-18T11:40:12.519222",
             "warnings": [
                 {
                     "type": Warnings.PRESSURE,
@@ -30,6 +32,7 @@ class NotifierConnectorTest(unittest.TestCase):
         mock_requests.post.return_value.status_code = 200
         payload = {
             "machine_id": 123,
+            "created_at": "2022-05-18T11:40:12.519222",
             "warnings": [
                 {
                     "type": Warnings.TEMPERATURE,
@@ -53,9 +56,12 @@ class NotifierConnectorTest(unittest.TestCase):
         }
         machine_id = 123
 
-        res = build_notification_payload(machine_id, averages)
+        res = build_notification_payload(
+            machine_id, datetime.fromisoformat("2022-05-18T11:40:12.519222"), averages
+        )
 
         self.assertEqual(machine_id, res.get("machine_id"))
+        self.assertEqual("2022-05-18T11:40:12.519222", res.get("created_at"))
         self.assertIn(
             {
                 "type": Warnings.TEMPERATURE,

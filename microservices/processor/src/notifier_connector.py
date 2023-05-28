@@ -22,8 +22,12 @@ def send(notification_payload):
     return response.status_code == 200
 
 
-def build_notification_payload(machine_id, averages):
-    notification_payload = {"machine_id": machine_id, "warnings": []}
+def build_notification_payload(machine_id, created_at, averages):
+    notification_payload = {
+        "machine_id": machine_id,
+        "created_at": created_at.isoformat(),
+        "warnings": [],
+    }
 
     if averages["pressure"] > Thresholds.PRESSURE:
         notification_payload["warnings"].append(
