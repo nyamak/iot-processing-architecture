@@ -1,6 +1,4 @@
-import os
 from contextlib import contextmanager
-from datetime import datetime
 
 from config import config
 from psycopg2 import pool
@@ -72,9 +70,9 @@ def save_payload_to_db(
             conn.rollback()
 
 
-def get_averages_of_latest_measurements(machine_id, timestamp):
+def get_averages(machine_id, timestamp):
     """
-    Fetches averages of latest measurements from device with machine_id, up until timestamp.
+    Fetch averages for all 3 metrics.
     """
     with _get_connection() as conn:
         try:
@@ -93,20 +91,6 @@ def get_averages_of_latest_measurements(machine_id, timestamp):
                 (machine_id, timestamp),
             )
             result = cursor.fetchone()
-            cursor.commit()
-            cursor.close()
-            return result
-        except:
-            conn.rollback()
-
-
-def get_defective_average(machine_id, timestamp):
-    """
-    Fetches rate of defective products for a machine_id from timestamp to now.
-    """
-    with _get_connection() as conn:
-        try:
-            cursor = conn.cursor()
             cursor.execute(
                 """
                 SELECT
@@ -119,9 +103,9 @@ def get_defective_average(machine_id, timestamp):
                 """,
                 (machine_id, timestamp),
             )
-            result = cursor.fetchone()
-            cursor.commit()
+            result += cursor.fetchone()
             cursor.close()
+            conn.commit()
             return result
         except:
             conn.rollback()
