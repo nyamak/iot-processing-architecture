@@ -53,20 +53,22 @@ def _is_datetime_isostring(string):
 
 class MQTTConnector:
     def __init__(self, host, port, topic, process) -> None:
-        self.client = mqtt.Client()
-        self.client.on_connect = self.on_connect
-        self.client.on_message = self.on_message
-
         self.host = host
         self.port = port
-        self.topic = topic
-        self.process = process
 
-    def on_connect(self, userdata, flags, rc):
+        self.client = mqtt.Client()
+        self.client._topic = topic
+        self.client._process = process
+        self.client.on_connect = MQTTConnector.on_connect
+        self.client.on_message = MQTTConnector.on_message
+
+    @staticmethod
+    def on_connect(client, userdata, flags, rc):
         print("Connected with result code " + str(rc))
-        self.client.subscribe(self.topic)
+        client.subscribe(client._topic)
 
-    def on_message(self, userdata, msg):
+    @staticmethod
+    def on_message(client, userdata, msg):
         print(msg.topic + " " + str(msg.payload))
         dict_payload = _bytes_to_dict(msg.payload)
         if not _is_valid(dict_payload):
@@ -74,7 +76,7 @@ class MQTTConnector:
             return
 
         dict_payload["created_at"] = datetime.fromisoformat(dict_payload["created_at"])
-        self.process(dict_payload)
+        client._process(dict_payload)
 
     def main(self):
         self.client.connect(self.host, self.port, 60)
