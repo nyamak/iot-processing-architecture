@@ -6,19 +6,10 @@ services:
     container_name: processor
     restart: always
     env_file: ./microservices/processor/.env
-    environment:
-      - MQTT_HOST=mosquitto
-      - MQTT_PORT=1883
-      - MQTT_TOPIC=payloads
-      - DB_HOST=metrics
-      - DB_PORT=5432
-      - DB_NAME=metrics
-      - DB_USER=postgres
-      - DB_PASSWORD=no_password
-      - ENV=DEV
     depends_on:
       - metrics-db
       - mosquitto
+      - notifier
 
   metrics-db:
     image: postgres:14-alpine
@@ -29,7 +20,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=no_password
     ports:
-      - "127.0.0.1:5432:5432"
+      - 5432:5432
     volumes:
       - pgdata-14-metrics:/var/lib/postgresql/data
 
@@ -38,18 +29,16 @@ services:
     container_name: mosquitto
     restart: always
     ports:
-      - "127.0.0.1:1883:1883"
-      - "127.0.0.1:9001:9001"
+      - 1883:1883
+      - 9001:9001
     volumes:
-     - mosquitto.conf:/mosquitto/config/mosquitto.conf
+     - ./microservices/processor/mosquitto.conf:/mosquitto/config/mosquitto.conf
 
   notifier:
     build: ./microservices/notifications/
     container_name: notifications
     restart: always
     env_file: ./microservices/notifications/.env
-    depends_on:
-      - processor
 
 volumes:
   pgdata-14-metrics:
