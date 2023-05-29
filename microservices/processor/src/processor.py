@@ -34,12 +34,15 @@ def process(payload_dict):
 
 
 def get_averages_for_machine(machine_id, timestamp):
-    averages = database_connector.get_averages(machine_id, timestamp)
-    return {
-        "temperature": averages[0] or 0.0,
-        "pressure": averages[1] or 0.0,
-        "defective": (averages[2] or 0.0) * 100.0,  # multiplying by 100 for pctage
-    }
+    try:
+        averages = database_connector.get_averages(machine_id, timestamp)
+        return {
+            "temperature": averages[0] or 0.0,
+            "pressure": averages[1] or 0.0,
+            "defective": (averages[2] or 0.0) * 100.0,  # multiplying by 100 for pctage
+        }
+    except:
+        return None
 
 
 if __name__ == "__main__":
