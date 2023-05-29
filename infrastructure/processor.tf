@@ -78,9 +78,6 @@ resource "kubernetes_deployment" "processor" {
             }
           }
         }
-        image_pull_secrets {
-          name = "regcred"
-        }
       }
     }
   }

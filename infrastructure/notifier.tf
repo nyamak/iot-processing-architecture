@@ -58,9 +58,6 @@ resource "kubernetes_deployment" "notifier" {
             }
           }
         }
-        image_pull_secrets {
-          name = "regcred"
-        }
       }
     }
   }
