@@ -23,9 +23,9 @@ class NotifierConnectorTest(unittest.TestCase):
             ],
         }
 
-        with self.assertRaises(Timeout):
-            send(payload)
-            mock_requests.post.assert_called_once()
+        res = send(payload)
+        mock_requests.post.assert_called_once()
+        self.assertFalse(res)
 
     @patch("notifier_connector.requests")
     def test_send_success(self, mock_requests):

@@ -15,11 +15,15 @@ class Thresholds:
 
 
 def send(notification_payload):
-    response = requests.post(
-        f"{config['NOTIFIER_HOST']}:{config['NOTIFIER_PORT']}/notifications",
-        json=notification_payload,
-    )
-    return response.status_code == 200
+    try:
+        response = requests.post(
+            f"http://{config['NOTIFIER_HOST']}:{config['NOTIFIER_PORT']}/notifications",
+            json=notification_payload,
+        )
+        return response.status_code == 200
+    except:
+        print("Failed to send notification.")
+        return False
 
 
 def build_notification_payload(machine_id, created_at, averages):
