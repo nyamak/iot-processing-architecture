@@ -114,12 +114,12 @@ class ProcessorTests(unittest.TestCase):
         mock_notifier.send.assert_not_called()
 
     @mock.patch("processor.database_connector")
-    def test_get_averages_for_machine(self, mock_database_connector):
-        mock_database_connector.get_averages_of_latest_measurements.return_value = (
+    def test_get_averages_for_machine_success(self, mock_database_connector):
+        mock_database_connector.get_averages.return_value = (
             60,
             1.1,
+            0.13,
         )
-        mock_database_connector.get_defective_average.return_value = 0.13
 
         res = get_averages_for_machine(
             123, datetime.fromisoformat("2022-05-18T11:40:12.519222")
@@ -131,6 +131,27 @@ class ProcessorTests(unittest.TestCase):
                 "temperature": 60,
                 "pressure": 1.1,
                 "defective": 13.0,
+            },
+        )
+
+    @mock.patch("processor.database_connector")
+    def test_get_averages_for_machine_no_average(self, mock_database_connector):
+        mock_database_connector.get_averages.return_value = (
+            None,
+            None,
+            None,
+        )
+
+        res = get_averages_for_machine(
+            123, datetime.fromisoformat("2022-05-18T11:40:12.519222")
+        )
+
+        self.assertEqual(
+            res,
+            {
+                "temperature": 0.0,
+                "pressure": 0.0,
+                "defective": 0.0,
             },
         )
 

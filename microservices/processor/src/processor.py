@@ -21,6 +21,8 @@ def process(payload_dict):
     averages = get_averages_for_machine(
         payload_dict["machine_id"], average_window_start
     )
+    if not averages:
+        return
 
     # Check for notifications
     notification_payload = notifier_connector.build_notification_payload(
@@ -32,16 +34,11 @@ def process(payload_dict):
 
 
 def get_averages_for_machine(machine_id, timestamp):
-    (
-        temperature_avg,
-        pressure_avg,
-    ) = database_connector.get_averages_of_latest_measurements(machine_id, timestamp)
-    defective_avg = database_connector.get_defective_average(machine_id, timestamp)
-
+    averages = database_connector.get_averages(machine_id, timestamp)
     return {
-        "temperature": temperature_avg,
-        "pressure": pressure_avg,
-        "defective": defective_avg * 100.0,  # multiplying by 100 for pctage
+        "temperature": averages[0] or 0.0,
+        "pressure": averages[1] or 0.0,
+        "defective": (averages[2] or 0.0) * 100.0,  # multiplying by 100 for pctage
     }
 
 
