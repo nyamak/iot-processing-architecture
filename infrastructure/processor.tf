@@ -9,6 +9,8 @@ resource "kubernetes_deployment" "processor" {
     ]
   }
 
+  depends_on = [kubernetes_deployment.notifier, helm_release.metrics_db]
+
   spec {
     replicas = 1
 
