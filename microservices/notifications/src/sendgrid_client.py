@@ -9,6 +9,7 @@ def send_to_sendgrid(notification_payload):
     try:
         sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
         response = sg.send(message)
+        print("Calling Sendgrid:")
         print(response.status_code)
         print(response.body)
         print(response.headers)

@@ -30,6 +30,7 @@ def health_check():
 @app.route("/notifications", methods=["POST"])
 def send_notifications():
     notification_payload = request.data
+    print(f"Received payload: {notification_payload}\n")
     if not _is_notification_payload_valid(notification_payload):
         return "", status.HTTP_400_BAD_REQUEST
 
