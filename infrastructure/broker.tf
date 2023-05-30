@@ -16,6 +16,14 @@ EOT
   }
 
   set {
+    name = "mosquitto.acls"
+    value = <<EOT
+topic read $SYS/#
+topic readwrite payloads
+EOT
+  }
+
+  set {
     name = "mosquitto.persistence.enabled"
     value = true
   }
