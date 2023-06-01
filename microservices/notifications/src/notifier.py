@@ -1,6 +1,5 @@
-import os
-
 import sendgrid_client
+from config import config
 from dotenv import load_dotenv
 from flask import request
 from flask_api import FlaskAPI, status
@@ -60,7 +59,4 @@ def _is_according_to_schema(payload, schema):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    if os.environ.get("ENV") == "DEV":
-        load_dotenv()
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=config["PORT"])

@@ -1,5 +1,4 @@
-import os
-
+from config import config
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
@@ -7,7 +6,7 @@ from sendgrid.helpers.mail import Mail
 def send_to_sendgrid(notification_payload):
     message = build_mail(notification_payload)
     try:
-        sg = SendGridAPIClient(os.environ.get("SENDGRID_API_KEY"))
+        sg = SendGridAPIClient(config["SENDGRID_API_KEY"])
         response = sg.send(message)
         print("Calling Sendgrid:")
         print(response.status_code)
@@ -21,8 +20,8 @@ def send_to_sendgrid(notification_payload):
 
 def build_mail(notification_payload):
     return Mail(
-        from_email=os.environ.get("SENDGRID_FROM_EMAIL"),
-        to_emails=os.environ.get("SENDGRID_TO_EMAIL"),
+        from_email=config["SENDGRID_FROM_EMAIL"],
+        to_emails=config["SENDGRID_TO_EMAIL"],
         subject=_generate_subject(
             notification_payload["machine_id"], notification_payload["warnings"]
         ),
