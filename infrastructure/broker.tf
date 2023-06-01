@@ -8,7 +8,7 @@ resource "helm_release" "mosquitto" {
     value = var.mqtt_port
   }
   set {
-    name = "mosquitto.config"
+    name  = "mosquitto.config"
     value = <<EOT
 allow_anonymous true
 log_type all
@@ -16,7 +16,7 @@ EOT
   }
 
   set {
-    name = "mosquitto.acls"
+    name  = "mosquitto.acls"
     value = <<EOT
 topic read $SYS/#
 topic readwrite payloads
@@ -24,7 +24,7 @@ EOT
   }
 
   set {
-    name = "mosquitto.persistence.enabled"
+    name  = "mosquitto.persistence.enabled"
     value = true
   }
 }
