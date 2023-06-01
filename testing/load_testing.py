@@ -29,7 +29,7 @@ class MyUser(MqttUser):
                 "unit_id": random.randint(1, config["NUMBER_OF_UNITS"]),
                 "created_at": datetime.now().isoformat(),
                 # Random between True and False
-                "is_defective": bool(random.getrandbits(1)),
+                "is_defective": get_random_defective(),
                 "machine_id": random.randint(1, config["NUMBER_OF_MACHINES"]),
                 "machine_temperature": get_random_temperature(),
                 "machine_pressure": get_random_pressure(),
@@ -48,3 +48,7 @@ def get_random_temperature():
     return random.uniform(
         config["TEMPERATURE_LIMIT"] - 5.0, config["TEMPERATURE_LIMIT"] + 5.0
     )
+
+
+def get_random_defective():
+    return random.random() < (config["DEFECTIVE_LIMIT"] / 100.0)
