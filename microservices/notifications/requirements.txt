@@ -1,3 +1,4 @@
 flask_api==3.0.post1
 sendgrid==6.10.0
 python-dotenv==1.0
+redis==4.5.5
