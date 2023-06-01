@@ -1,5 +1,5 @@
 resource "helm_release" "notifier_cache" {
-  name       = "ticket-cache"
+  name       = "notifier-cache"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "redis"
 
