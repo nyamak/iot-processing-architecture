@@ -3,8 +3,8 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 
-def send_to_sendgrid(notification_payload):
-    message = build_mail(notification_payload)
+def send_to_sendgrid(notification_payloads):
+    message = build_notifications_mail(notification_payloads)
     try:
         sg = SendGridAPIClient(config["SENDGRID_API_KEY"])
         response = sg.send(message)
@@ -18,32 +18,24 @@ def send_to_sendgrid(notification_payload):
         return False
 
 
-def build_mail(notification_payload):
+def build_notifications_mail(notification_payloads):
     return Mail(
         from_email=config["SENDGRID_FROM_EMAIL"],
         to_emails=config["SENDGRID_TO_EMAIL"],
-        subject=_generate_subject(
-            notification_payload["machine_id"], notification_payload["warnings"]
+        subject=f"Report: {len(notification_payloads)} warning(s)",
+        html_content=_generate_multiple_notifications_email_content(
+            notification_payloads
         ),
-        html_content=_generate_email_content(notification_payload),
     )
 
 
-def _generate_subject(machine_id, warnings):
-    if len(warnings) == 1:
-        subject = f"{warnings[0]['type'].title()} warning"
-    else:
-        subject = f"{len(warnings)} warnings"
-    return subject + f" - Machine ID: {machine_id}"
-
-
-def _generate_email_content(notification_payload):
-    body = f"""
-<h1 style="text-align:center">Warning(s):</h1>
-<p style="text-align:center"><strong>Machine ID:</strong> {notification_payload['machine_id']}</p>
-<p style="text-align:center"><strong>Datetime</strong>: {notification_payload['created_at']}</p>
+def _generate_multiple_notifications_email_content(notification_payloads):
+    body = '<h1 style="text-align:center">Warning(s):</h1>\n'
+    for payload in notification_payloads.values():
+        body += f"""<p><strong>Machine ID:</strong> {payload['machine_id']}</p>
+<p style="margin-left:40px"><strong>Datetime</strong>: {payload['created_at']}</p>
 """
-    for warning in notification_payload.get("warnings"):
-        body += f"""<p style="text-align:center"><strong>{warning['type'].title()}</strong>: {warning['current_value']} {warning['unit']} ({warning['target_value']})</p>
+        for warning in payload.get("warnings"):
+            body += f"""<p style="margin-left:40px"><strong>{warning['type'].title()}</strong>: {warning['current_value']:.2f} {warning['unit']} ({warning['target_value']:.2f})</p>
 """
     return body

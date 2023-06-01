@@ -1,6 +1,6 @@
+import redis_client
 import sendgrid_client
 from config import config
-from dotenv import load_dotenv
 from flask import request
 from flask_api import FlaskAPI, status
 
@@ -29,11 +29,18 @@ def health_check():
 @app.route("/notifications", methods=["POST"])
 def send_notifications():
     notification_payload = request.data
+
     print(f"Received payload: {notification_payload}\n")
     if not _is_notification_payload_valid(notification_payload):
         return "", status.HTTP_400_BAD_REQUEST
 
-    res = sendgrid_client.send_to_sendgrid(notification_payload)
+    if redis_client.should_send_email():
+        payloads = redis_client.retrieve_notification_payloads()
+        payloads[notification_payload["machine_id"]] = notification_payload
+        res = sendgrid_client.send_to_sendgrid(payloads)
+        redis_client.set_cooldown()
+    else:
+        res = redis_client.store_notification_payload(notification_payload)
     return (
         "",
         status.HTTP_200_OK if res else status.HTTP_503_SERVICE_UNAVAILABLE,
