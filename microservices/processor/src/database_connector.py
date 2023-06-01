@@ -50,7 +50,8 @@ def save_payload_to_db(
                     machine_id, unit_id, is_defective, created_at
                 )
                 VALUES
-                    (%s, %s, %s, %s);
+                    (%s, %s, %s, %s)
+                ON CONFLICT DO NOTHING;
                 """,
                 (machine_id, unit_id, is_defective, created_at),
             )
@@ -60,7 +61,8 @@ def save_payload_to_db(
                     machine_id, temperature, pressure, created_at
                 )
                 VALUES
-                    (%s, %s, %s, %s);
+                    (%s, %s, %s, %s)
+                ON CONFLICT DO NOTHING;
                 """,
                 (machine_id, machine_temperature, machine_pressure, created_at),
             )
