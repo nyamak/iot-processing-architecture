@@ -43,10 +43,10 @@ variable "processor_image_url" {
   default     = "nyamak/iot-scalable-architecture:processor1.0"
 }
 
-variable "processor_target_cpu_utilization_percentage" {
+variable "processor_average_memory" {
   type        = number
-  description = "Target CPU utilization percentage for Processor service."
-  default     = 80
+  description = "Target average memory utilization percentage for Processor service."
+  default     = 40
 }
 
 variable "processor_service_max_replicas" {

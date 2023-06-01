@@ -91,7 +91,7 @@ resource "kubernetes_secret" "processor" {
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler" "processor" {
+resource "kubernetes_horizontal_pod_autoscaler_v2" "processor" {
   metadata {
     name = "processor"
   }
@@ -100,12 +100,21 @@ resource "kubernetes_horizontal_pod_autoscaler" "processor" {
     max_replicas = var.processor_service_max_replicas
     min_replicas = var.processor_service_min_replicas
 
-    target_cpu_utilization_percentage = var.processor_target_cpu_utilization_percentage
-
     scale_target_ref {
       kind        = "Deployment"
       name        = "processor"
       api_version = "apps/v1"
+    }
+
+    metric {
+      type = "Resource"
+      resource {
+        name = "memory"
+        target {
+          type                = "Utilization"
+          average_utilization = var.processor_average_memory
+        }
+      }
     }
   }
 }
