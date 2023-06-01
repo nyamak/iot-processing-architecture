@@ -104,6 +104,24 @@ variable "notifier_service_port" {
   default     = 5000
 }
 
+variable "notifier_cache_host" {
+  type        = string
+  description = "Host for cache on Notifier."
+  default     = "notifier-cache-redis-master"
+}
+
+variable "notifier_cache_port" {
+  type        = number
+  description = "Port for cache on Notifier."
+  default     = 6379
+}
+
+variable "notifier_email_cooldown" {
+  type        = number
+  description = "Cooldown between emails, in seconds."
+  default     = 60
+}
+
 # MQTT broker variables
 variable "mqtt_host" {
   type        = string
