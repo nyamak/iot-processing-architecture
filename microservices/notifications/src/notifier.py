@@ -70,4 +70,4 @@ def _is_according_to_schema(payload, schema):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=config["PORT"])
+    app.run(host="0.0.0.0", port=config["PORT"], debug=True)
