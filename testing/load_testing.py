@@ -40,13 +40,13 @@ class MyUser(MqttUser):
 
 def get_random_pressure():
     return random.uniform(
-        config["PRESSURE_LIMIT"] - 0.1, config["PRESSURE_LIMIT"] + 0.1
+        config["PRESSURE_LIMIT"] - 0.9, config["PRESSURE_LIMIT"] + 0.1
     )
 
 
 def get_random_temperature():
     return random.uniform(
-        config["TEMPERATURE_LIMIT"] - 5.0, config["TEMPERATURE_LIMIT"] + 5.0
+        config["TEMPERATURE_LIMIT"] - 9.0, config["TEMPERATURE_LIMIT"] + 1.0
     )
 
 
