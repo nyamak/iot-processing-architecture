@@ -46,7 +46,9 @@ def get_averages_for_machine(machine_id, timestamp):
 
 
 if __name__ == "__main__":
+    print("Starting Processor...")
     connector = gateway_connector.MQTTConnector(
         config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_TOPIC"], process
     )
+    print("Starting connector.main...")
     connector.main()

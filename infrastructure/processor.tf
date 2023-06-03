@@ -9,6 +9,8 @@ resource "kubernetes_deployment" "processor" {
     ]
   }
 
+  depends_on = [kubernetes_deployment.notifier, helm_release.metrics_db]
+
   spec {
     replicas = 1
 
@@ -31,30 +33,6 @@ resource "kubernetes_deployment" "processor" {
           image             = var.processor_image_url
           name              = "processor"
           image_pull_policy = "Always"
-
-          port {
-            container_port = var.processor_service_port
-          }
-
-          liveness_probe {
-            http_get {
-              path = "/health"
-              port = var.processor_service_port
-            }
-            failure_threshold     = 1
-            initial_delay_seconds = 15
-            period_seconds        = 5
-          }
-
-          readiness_probe {
-            http_get {
-              path = "/health"
-              port = var.processor_service_port
-            }
-            failure_threshold     = 1
-            initial_delay_seconds = 15
-            period_seconds        = 5
-          }
 
           resources {
             limits = {
@@ -82,38 +60,24 @@ resource "kubernetes_deployment" "processor" {
     }
   }
 }
-
-resource "kubernetes_service" "processor" {
-  metadata {
-    name = "processor"
-  }
-  spec {
-    selector = {
-      app = kubernetes_deployment.processor.spec.0.template.0.metadata.0.labels.app
-    }
-    type = "ClusterIP"
-    port {
-      port = var.processor_service_port
-    }
-  }
-}
-
 resource "kubernetes_config_map" "processor" {
   metadata {
     name = "processor"
   }
   data = {
-    MQTT_HOST         = var.mqtt_host
-    MQTT_PORT         = var.mqtt_port
-    MQTT_TOPIC        = var.mqtt_topic
-    DB_HOST           = var.metrics_db_host
-    DB_PORT           = var.metrics_db_port
-    DB_NAME           = var.metrics_db_name
-    PRESSURE_LIMIT    = var.pressure_limit
-    TEMPERATURE_LIMIT = var.temperature_limit
-    DEFECTIVE_LIMIT   = var.defective_limit
-    NOTIFIER_HOST     = var.notifier_service_host
-    NOTIFIER_PORT     = var.notifier_service_port
+    MQTT_HOST                = var.mqtt_host
+    MQTT_PORT                = var.mqtt_port
+    MQTT_TOPIC               = var.mqtt_topic
+    DB_HOST                  = var.metrics_db_host
+    DB_PORT                  = var.metrics_db_port
+    DB_NAME                  = var.metrics_db_name
+    PRESSURE_LIMIT           = var.pressure_limit
+    TEMPERATURE_LIMIT        = var.temperature_limit
+    DEFECTIVE_LIMIT          = var.defective_limit
+    NOTIFIER_HOST            = var.notifier_service_host
+    NOTIFIER_PORT            = var.notifier_service_port
+    NOTIFICATION_TIME_WINDOW = var.notification_time_window
+    ENV                      = var.env
   }
 }
 
@@ -127,7 +91,7 @@ resource "kubernetes_secret" "processor" {
   }
 }
 
-resource "kubernetes_horizontal_pod_autoscaler" "processor" {
+resource "kubernetes_horizontal_pod_autoscaler_v2" "processor" {
   metadata {
     name = "processor"
   }
@@ -136,12 +100,21 @@ resource "kubernetes_horizontal_pod_autoscaler" "processor" {
     max_replicas = var.processor_service_max_replicas
     min_replicas = var.processor_service_min_replicas
 
-    target_cpu_utilization_percentage = var.processor_target_cpu_utilization_percentage
-
     scale_target_ref {
       kind        = "Deployment"
       name        = "processor"
       api_version = "apps/v1"
+    }
+
+    metric {
+      type = "Resource"
+      resource {
+        name = "memory"
+        target {
+          type                = "Utilization"
+          average_utilization = var.processor_average_memory
+        }
+      }
     }
   }
 }

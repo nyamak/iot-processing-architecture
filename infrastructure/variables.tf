@@ -1,3 +1,10 @@
+# General
+variable "env" {
+  type        = string
+  description = "Environment indicator."
+  default     = "prod"
+}
+
 # Metrics DB
 variable "metrics_db_username" {
   type        = string
@@ -8,7 +15,7 @@ variable "metrics_db_username" {
 variable "metrics_db_password" {
   type        = string
   sensitive   = true
-  description = "Metrics DB passwword."
+  description = "Metrics DB password."
 }
 
 variable "metrics_db_name" {
@@ -20,7 +27,7 @@ variable "metrics_db_name" {
 variable "metrics_db_host" {
   type        = string
   description = "Metrics DB host."
-  default     = "metrics"
+  default     = "metrics-db-postgresql"
 }
 
 variable "metrics_db_port" {
@@ -33,24 +40,13 @@ variable "metrics_db_port" {
 variable "processor_image_url" {
   type        = string
   description = "Docker image URL for Processor."
+  default     = "nyamak/iot-scalable-architecture:processor1.0"
 }
 
-variable "processor_target_cpu_utilization_percentage" {
+variable "processor_average_memory" {
   type        = number
-  description = "Target CPU utilization percentage for Processor service."
-  default     = 80
-}
-
-variable "processor_service_host" {
-  type        = string
-  description = "Host for Processor service."
-  default     = "processor"
-}
-
-variable "processor_service_port" {
-  type        = number
-  description = "Port for Processor service."
-  default     = 5000
+  description = "Target average memory utilization percentage for Processor service."
+  default     = 40
 }
 
 variable "processor_service_max_replicas" {
@@ -67,26 +63,33 @@ variable "processor_service_min_replicas" {
 
 variable "temperature_limit" {
   type        = number
-  description = "Temperature threshold for machines."
+  description = "Temperature (°C) threshold for machines."
   default     = 75
 }
 
 variable "pressure_limit" {
   type        = number
-  description = "Pressure threshold for machines."
+  description = "Pressure (atm) threshold for machines."
   default     = 1.0
 }
 
 variable "defective_limit" {
   type        = number
-  description = "Defective percentage threshold for machines."
+  description = "Defective (%) threshold for machines."
   default     = 5.0
+}
+
+variable "notification_time_window" {
+  type        = number
+  description = "Window duration in seconds for notification rolling average."
+  default     = 60
 }
 
 # Notifier service variables
 variable "notifier_image_url" {
   type        = string
   description = "Docker image URL for Notifier service."
+  default     = "nyamak/iot-scalable-architecture:notifications1.0"
 }
 
 variable "notifier_service_host" {
@@ -99,6 +102,24 @@ variable "notifier_service_port" {
   type        = number
   description = "Port for Notifier service."
   default     = 5000
+}
+
+variable "notifier_cache_host" {
+  type        = string
+  description = "Host for cache on Notifier."
+  default     = "notifier-cache-redis-master"
+}
+
+variable "notifier_cache_port" {
+  type        = number
+  description = "Port for cache on Notifier."
+  default     = 6379
+}
+
+variable "notifier_email_cooldown" {
+  type        = number
+  description = "Cooldown between emails, in seconds."
+  default     = 60
 }
 
 # MQTT broker variables
