@@ -1,0 +1,16 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: IoT Processing Architecture
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Nicolas Vitor Yuki
+    family-names: Obara Yamakoshi
+    email: nicolas.yamakoshi@gmail.com
+repository-code: 'https://github.com/nyamak/iot-processing-architecture'
+license: MIT
+date-released: '2023-06-02'
