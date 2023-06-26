@@ -8,7 +8,8 @@ Universidade Federal de Santa Catarina (UFSC).
 
 ## Project structure
 
-This project can be divided into Infrastructure (`/infrastructure`) and Microservices (`/microservices`).
+This project can be divided into Infrastructure (`/infrastructure`),
+Microservices (`/microservices`) and Testing (`/testing`).
 
 ### Infrastructure
 
@@ -19,9 +20,47 @@ deployment.
 
 Written in Python, this folder contains all code related to application servers.
 
+### Testing
+
+This folder contains all code related to load testing, written using
+[Locust.io](locust.io).
+
 ## How to use
 
-TODO: write installation steps
+### Setup
+To start, you need to have the latest version of Terraform (`v1.4.6` as of the
+writing of this document) and a free-tier [Sendgrid](https://app.sendgrid.com/)
+account, with an [API key](https://docs.sendgrid.com/ui/account-and-settings/api-keys)
+and a [verified email](https://docs.sendgrid.com/ui/sending-email/sender-verification).
+
+### Deployment
+If you simply want to deploy the latest version of this application using
+Kubernetes, you may update your .kubeconfig file with the desired context
+and add its name on `./infrastructure/providers.tf`, under both `config_context`
+parameters. You may use `minikube` for local deployment or your cloud provider
+of choice.
+
+After, you may simply go to the `.\infrastructure` folder (`cd infrastructure`)
+and execute `terraform init`, followed by `terraform apply`, setting you correct
+credentials and variables.
+
+
+### Load testing
+To execute the load tests, you must first install the requirements with:
+```
+cd testing
+pip install -r requirements.txt
+```
+
+Then you must update create a `.env` file, replacing any values in the
+`.env.example` file.
+
+To execute the load tests, run the following line:
+```
+locust -f load_testing.py
+```
+
+Access the URL shown in the command line and set the parameters.
 
 
 ## Sample payload
