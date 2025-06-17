@@ -28,6 +28,8 @@ resource "kubernetes_deployment" "processor" {
       }
 
       spec {
+        
+        automount_service_account_token = false
         termination_grace_period_seconds = 30
         container {
           image             = var.processor_image_url
