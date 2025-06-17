@@ -26,6 +26,8 @@ resource "kubernetes_deployment" "notifier" {
       }
 
       spec {
+        
+        automount_service_account_token = false
         termination_grace_period_seconds = 30
         container {
           image             = var.notifier_image_url
